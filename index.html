@@ -1,12 +1,1069 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banking</title>
+    <title>List Customer</title>
+    <link rel="shortcut icon" href="https://vanphongxanh.vn/wp-content/uploads/2022/03/logo-social.png">
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/node_modules/fontawesome-4.7/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
+
 <body>
-    <a href="listCustomers.html"><h1>Bank Management</h1></a>
+
+    <div class="container" id="container">
+        <div class="table-title">
+            <div class="row">
+                <div class="col-sm-5">
+                    <h1>List of customers</h1>
+                </div>
+                <div class="col-sm-7">
+                    <button class="btn btn-outline-light" type="button" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop">
+                        <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                        <span>Add New Customer</span>
+                    </button>
+
+                    <button class="btn btn-outline-light transferInfo" type="button">
+                        <i class="fa fa-history" aria-hidden="true"></i>
+                        <span>Transfer money Information</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <table class="table table-hover" id="tbCustomer">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Fullname</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Balance</th>
+                    <th colspan="5">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+    <!-- End container -->
+
+    <!-- Craete Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Add new customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmCreate" action="">
+                        <div class="row mt-3">
+                            <div class="col-lg-6">
+                                <label for="fullName" class="fw-bold">Full Name</label>
+                                <input type="text" id="fullName" name="fullName" class="form-control">
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="email" class="fw-bold">Email</label>
+                                <input type="text" id="email" name="email" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-6">
+                                <label for="phone" class="fw-bold">Phone</label>
+                                <input type="text" id="phone" name="phone" class="form-control">
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="address" class="fw-bold">Address</label>
+                                <input type="text" id="address" name="address" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnCreate">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end create modal -->
+
+    <!-- Update Modal -->
+    <div class="modal fade" id="mdUpdate" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmUpdate" action="">
+                        <div class="row mt-3">
+                            <input type="hidden" id="idUp">
+                            <input type="hidden" id="balanceUp">
+                            <div class="col-lg-6">
+                                <label for="fullNameUp" class="fw-bold">Full Name</label>
+                                <input type="text" id="fullNameUp" name="fullNameUp" class="form-control">
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="emailUp" class="fw-bold">Email</label>
+                                <input type="text" id="emailUp" name="emailUp" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row mt-3 mb-3">
+                            <div class="col-lg-6">
+                                <label for="phoneUp" class="fw-bold">Phone</label>
+                                <input type="text" id="phoneUp" name="phoneUp" class="form-control">
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="addressUp" class="fw-bold">Address</label>
+                                <input type="text" id="addressUp" name="addressUp" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnUpdate" class="btn btn-outline-secondary">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End update modal -->
+
+    <!-- Delete modal -->
+    <div class="modal fade" id="mdDelete" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmDelete" action="">
+                        <div class="row mt-3">
+                            <input type="hidden" id="idDel">
+                            <div class="col-lg-6">
+                                <label for="fullNameUp" class="fw-bold">Full Name</label>
+                                <input type="text" id="fullNameDel" name="fullNameDel" class="form-control" readonly>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="emailUp" class="fw-bold">Email</label>
+                                <input type="text" id="emailDel" name="emailDel" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="row mt-3 mb-3">
+                            <div class="col-lg-6">
+                                <label for="phoneUp" class="fw-bold">Phone</label>
+                                <input type="text" id="phoneDel" name="phoneDel" class="form-control" readonly>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="addressUp" class="fw-bold">Address</label>
+                                <input type="text" id="addressDel" name="addressDel" class="form-control" readonly>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnDelete" class="btn btn-outline-danger">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit modal -->
+    <div class="modal fade" id="mdDeposit" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Deposit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmDeposit" action="">
+                        <div class="row mt-3">
+                            <div class="col-lg-6">
+                                <label for="idCus" class="fw-bold">Customer Id</label>
+                                <input type="text" id="idCus" name="idCus" class="form-control" readonly>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="fullNameCus" class="fw-bold">Full Name</label>
+                                <input type="text" id="fullNameCus" name="fullNameCus" class="form-control" readonly>
+                            </div>
+                            <input type="hidden" id="emailCus">
+                            <input type="hidden" id="phoneCus">
+                            <input type="hidden" id="addressCus">
+                        </div>
+                        <div class="row mt-3 mb-3">
+                            <div class="col-lg-6">
+                                <label for="balanceCus" class="fw-bold">Current balance ($)</label>
+                                <input type="text" id="balanceCus" name="balanceCus" class="form-control" readonly>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="transactionAmountDe" class="fw-bold">Transaction Amount ($)</label>
+                                <input type="text" id="transactionAmountDe" name="transactionAmountDe"
+                                    class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnDeposit" class="btn btn-outline-success">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        Deposit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End deposit modal -->
+
+    <!-- Withdraw modal -->
+    <div class="modal fade" id="mdWithdraw" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Witdraw</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmDeposit" action="">
+                        <div class="row mt-3">
+                            <div class="col-lg-6">
+                                <label for="idCus" class="fw-bold">Customer Id</label>
+                                <input type="text" id="idCus1" name="idCus" class="form-control" readonly>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="fullNameCus" class="fw-bold">Full Name</label>
+                                <input type="text" id="fullNameCus1" name="fullNameCus" class="form-control" readonly>
+                            </div>
+                            <input type="hidden" id="emailCus1">
+                            <input type="hidden" id="phoneCus1">
+                            <input type="hidden" id="addressCus1">
+                        </div>
+                        <div class="row mt-3 mb-3">
+                            <div class="col-lg-6">
+                                <label for="balanceCus" class="fw-bold">Current balance ($)</label>
+                                <input type="text" id="balanceCus1" name="balanceCus" class="form-control" readonly>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="transactionAmountWi" class="fw-bold">Transaction Amount ($)</label>
+                                <input type="text" id="transactionAmountWi" name="transactionAmountWi"
+                                    class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnWithdraw" class="btn btn-outline-warning">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        Withdraw
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End withdraw modal -->
+
+    <!-- Transfer modal -->
+    <div class="modal fade" id="mdTransfer" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Transfer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmTransfer">
+                        <fieldset class="row g-3">
+                            <div class="form-group row">
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Sender ID</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" readonly="" id="senderId" name="idCus">
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Sender Name</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control valid" readonly="" id="senderName"
+                                            name="idCus">
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Email</label>
+                                    <div class="col-sm-12">
+                                        <input type="email" class="form-control" readonly="" id="senderEmail"
+                                            name="idCus">
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Sender balance</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control num-space" readonly="" id="senderBalance"
+                                            name="idCus">
+                                    </div>
+                                </div>
+                                <input type="hidden" id="senderPhone">
+                                <input type="hidden" id="senderAddress">
+                            </div>
+                            <div class="form-group row mb-4">
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Recipient ID</label>
+                                    <div class="col-sm-12">
+                                        <select class="form-select" id="selectRecipient">
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Transfer Amount ($)</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="transferAmount"
+                                            name="transferAmount">
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Fees (%)</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="fees" value="10" readonly="">
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Total amount of transaction ($)</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control num-space" readonly=""
+                                            id="transactionAmountTr" name="transactionAmountTr">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnTransfer" class="btn btn-outline-primary">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        Transfer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End transfer modal -->
+
+    <!-- Transfers information -->
+    <div class="modal fade" id="mdTransferInfo" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Transfer Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover tbTransferInfo">
+                        <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-center">Sender ID</th>
+                                <th class="text-center">Sender Name</th>
+                                <th class="text-center">Recipient ID</th>
+                                <th class="text-center">Recipient Name</th>
+                                <th class="text-center">Transfer Amount ($)</th>
+                                <th class="text-center">Fees (%)</th>
+                                <th class="text-center">Fees Amount ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="5"></td>
+                                <td class="text-center fw-bold">Total Fees Amount:</td>
+                                <td colspan="2" class="text-end fw-bold num-comma pr-20" style="font-size: 24px">
+                                    <input type="text" id="totalFeesAmount" style="border: none; text-align: right;" disabled>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End transfer information -->
+    <script src="/assets/js/jquery-3.6.0.min.js"></script>
+    <script src="/js/model.js"></script>
+    <script src="/assets/js/scrip.js"></script>
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script>
+        let listCustomer = [];
+        function init() {
+            getAllCustomers();
+            getAllTransfer();
+        }
+        init();
+
+        function initTooltip() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        }
+
+        function getAllCustomers() {
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "GET",
+                url: 'http://localhost:3000/customers'
+            })
+                .done((data) => {
+                    drawCustomers(data);
+                    listCustomer = data;
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR);
+                });
+        }
+
+        let customers = [];
+        let id = 1;
+
+        let customer = new Customer(id, 'NVA', 'nva@co.cc', '2345', '28 NTP', 0, 0);
+        customers.push(customer);
+        id++;
+
+        customer = new Customer(id, 'NVB', 'nvb@co.cc', '6789', '28 NTP', 0, 0);
+        customers.push(customer);
+        id++;
+
+        function drawCustomers(data) {
+            $('#tbCustomer tbody').empty();
+            $.each(data, (i, item) => {
+                let str = `
+                    <tr>
+                        <td>${item.id}</td>
+                        <td>${item.fullName}</td>
+                        <td>${item.email}</td>
+                        <td class="text-center">${item.phone}</td>
+                        <td>${item.address}</td>
+                        <td class="text-end">${item.balance}</td>
+                        <td>
+                            <button class="btn btn-outline-secondary edit" data-id="${item.id}" data-fullname="${item.fullName}" data-email="${item.email}" data-phone="${item.phone}" data-address="${item.address}" data-balance="${item.balance}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Update">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-success deposit" data-id="${item.id}" data-fullname="${item.fullName}"  data-email="${item.email}" data-phone="${item.phone}" data-address="${item.address}" data-balance="${item.balance}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Deposit">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-warning withdraw" data-id="${item.id}" data-fullname="${item.fullName}"  data-email="${item.email}" data-phone="${item.phone}" data-address="${item.address}" data-balance="${item.balance}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Withdraw">
+                                <i class="fa fa-minus" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-primary transfer" data-id="${item.id}" data-fullname="${item.fullName}" data-email="${item.email}" data-phone="${item.phone}" data-address="${item.address}" data-balance="${item.balance}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Transfer">
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-danger delete" data-bs-toggle="tooltip" data-id="${item.id}" data-fullname="${item.fullName}" data-email="${item.email}" data-phone="${item.phone}" data-address="${item.address}" data-bs-placement="top" data-bs-title="Delete">
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                let tbCustomer = $('#tbCustomer tbody');
+                tbCustomer.prepend(str);
+            });
+            initTooltip();
+            handleShowUpdateModal();
+            handleShowDeleteModal();
+            handleShowDepositModal();
+            handleShowWithdrawModal();
+            handleShowTransferModal();
+            showTransferInfo();
+        }
+
+        let btnCreate = $('#btnCreate');
+
+        btnCreate.on('click', () => {
+
+            let fullName = $('#fullName').val();
+            let email = $('#email').val();
+            let phone = $('#phone').val();
+            let address = $('#address').val();
+
+            customer = new Customer(0, fullName, email, phone, address, 0, 0);
+            console.log(customer);
+            delete customer.id;
+
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "POST",
+                url: 'http://localhost:3000/customers',
+                data: JSON.stringify(customer)
+            })
+                .done((item) => {
+                    let str = `
+                    <tr>
+                        <td>${item.id}</td>
+                        <td>${item.fullName}</td>
+                        <td>${item.email}</td>
+                        <td class="text-center">${item.phone}</td>
+                        <td>${item.address}</td>
+                        <td class="text-end">${item.balance}</td>
+                        <td>
+                            <button class="btn btn-outline-secondary edit" data-id="${item.id}" data-fullname="${item.fullName}" data-email="${item.email}" data-phone="${item.phone}" data-address="${item.address}" data-balance="${item.balance}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Update">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-success deposit" data-id="${item.id}" data-fullname="${item.fullName}" data-email="${item.email}" data-phone="${item.phone}" data-address="${item.address}" data-balance="${item.balance}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Deposit">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-warning withdraw" data-id="${item.id}" data-fullname="${item.fullName}" data-email="${item.email}" data-phone="${item.phone}" data-address="${item.address}" data-balance="${item.balance}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Withdraw">
+                                <i class="fa fa-minus" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-primary transfer" data-id="${item.id}" data-fullname="${item.fullName}" data-email="${item.email}" data-phone="${item.phone}" data-address="${item.address}" data-balance="${item.balance}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Transfer">
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-danger delete"data-id="${item.id}" data-fullname="${item.fullName}" data-email="${item.email}" data-phone="${item.phone}" data-address="${item.address}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete">
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+
+                    let tbCustomer = $('#tbCustomer tbody');
+                    tbCustomer.prepend(str);
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR);
+                });
+
+        });
+
+        // show form update
+        function handleShowUpdateModal() {
+
+            let btnUpdate = $(".edit");
+
+            btnUpdate.on('click', function () {
+
+                let id = $(this).data('id');
+                let fullName = $(this).data('fullname');
+                let email = $(this).data('email');
+                let phone = $(this).data('phone');
+                let address = $(this).data('address');
+                let balance = $(this).data('balance');
+
+                $("#idUp").val(id);
+                $("#fullNameUp").val(fullName);
+                $("#emailUp").val(email);
+                $("#phoneUp").val(phone);
+                $("#addressUp").val(address);
+                $("#balanceUp").val(balance)
+
+                $("#mdUpdate").modal('show');
+            })
+        }
+
+        // update customer
+        let btnUpdate = $("#btnUpdate");
+
+        btnUpdate.on('click', () => {
+            let customerId = +$("#idUp").val();
+            let fullName = $('#fullNameUp').val();
+            let email = $('#emailUp').val();
+            let phone = $('#phoneUp').val();
+            let address = $('#addressUp').val();
+            let balance = $('#balanceUp').val();
+
+            customer = new Customer(customerId, fullName, email, phone, address, balance, 0);
+
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "PUT",
+                url: 'http://localhost:3000/customers/' + customerId,
+                data: JSON.stringify(customer)
+            })
+                .done((data) => {
+                    getAllCustomers();
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR);
+                });
+
+            $("#mdUpdate").modal('hide');
+        });
+
+        // show info delete
+        function handleShowDeleteModal() {
+
+            let btnDelete = $(".delete");
+
+            btnDelete.on('click', function () {
+
+                let id = $(this).data('id');
+                let fullName = $(this).data('fullname');
+                let email = $(this).data('email');
+                let phone = $(this).data('phone');
+                let address = $(this).data('address');
+
+                $("#idDel").val(id);
+                $("#fullNameDel").val(fullName);
+                $("#emailDel").val(email);
+                $("#phoneDel").val(phone);
+                $("#addressDel").val(address);
+
+                $("#mdDelete").modal('show');
+            })
+        }
+        // Delete
+        let btnDelete = $("#btnDelete");
+
+        btnDelete.on('click', () => {
+            let customerId = +$("#idDel").val();
+
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "DELETE",
+                url: 'http://localhost:3000/customers/' + customerId,
+            })
+                .done((data) => {
+                    getAllCustomers();
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR);
+                });
+
+            $("#mdDelete").modal('hide');
+        });
+
+        // show form deposit
+        function handleShowDepositModal() {
+
+            let btnDeposit = $(".deposit");
+
+            btnDeposit.on('click', function () {
+
+                let id = $(this).data('id');
+                let fullName = $(this).data('fullname');
+                let email = $(this).data('email');
+                let phone = $(this).data('phone');
+                let address = $(this).data('address');
+                let balance = $(this).data('balance');
+
+                $("#idCus").val(id);
+                $("#fullNameCus").val(fullName);
+                $("#emailCus").val(email);
+                $("#phoneCus").val(phone);
+                $("#addressCus").val(address);
+                $("#balanceCus").val(balance);
+
+                $("#mdDeposit").modal('show');
+            })
+        }
+        // deposit
+        let btnDeposit = $("#btnDeposit");
+        let deposit;
+        let depositId = 1;
+        btnDeposit.on('click', () => {
+
+            let customerId = +$("#idCus").val();
+            let fullName = $('#fullNameCus').val();
+            let email = $('#emailCus').val();
+            let phone = $('#phoneCus').val();
+            let address = $('#addressCus').val();
+            let balance = +$('#balanceCus').val();
+            let transactionAmount = +$('#transactionAmountDe').val();
+
+            let newBalance;
+            if (balance >= 0) {
+                newBalance = balance + transactionAmount;
+            }
+
+            deposit = new Deposit(0, customerId, transactionAmount);
+            delete deposit.id;
+            depositId++;
+
+
+            customer = new Customer(customerId, fullName, email, phone, address, newBalance, 0);
+
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "POST",
+                url: 'http://localhost:3000/deposit',
+                data: JSON.stringify(deposit)
+            })
+
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "PUT",
+                url: 'http://localhost:3000/customers/' + customerId,
+                data: JSON.stringify(customer)
+            })
+                .done((data) => {
+                    getAllCustomers();
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR);
+                });
+
+            $("#mdDeposit").modal('hide');
+        });
+
+        // show withdraw form
+        function handleShowWithdrawModal() {
+
+            let btnWithdraw = $(".withdraw");
+
+            btnWithdraw.on('click', function () {
+
+                let id = $(this).data('id');
+                let fullName = $(this).data('fullname');
+                let email = $(this).data('email');
+                let phone = $(this).data('phone');
+                let address = $(this).data('address');
+                let balance = $(this).data('balance');
+
+                $("#idCus1").val(id);
+                $("#fullNameCus1").val(fullName);
+                $("#emailCus1").val(email);
+                $("#phoneCus1").val(phone);
+                $("#addressCus1").val(address);
+                $("#balanceCus1").val(balance);
+
+                $("#mdWithdraw").modal('show');
+            })
+        }
+        // withdraw
+        let btnWithdraw = $("#btnWithdraw");
+        let withdraw;
+        let withdrawId = 1;
+        btnWithdraw.on('click', () => {
+
+            let customerId = +$("#idCus1").val();
+            let fullName = $('#fullNameCus1').val();
+            let email = $('#emailCus1').val();
+            let phone = $('#phoneCus1').val();
+            let address = $('#addressCus1').val();
+            let balance = +$('#balanceCus1').val();
+            let transactionAmount = +$('#transactionAmountWi').val();
+
+            let newBalance;
+            if (balance >= transactionAmount) {
+                newBalance = balance - transactionAmount;
+
+                withdraw = new Withdraw(withdrawId, customerId, transactionAmount);
+                delete withdraw.id;
+                withdrawId++;
+
+                customer = new Customer(customerId, fullName, email, phone, address, newBalance, 0);
+
+                $.ajax({
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-type": "application/json"
+                    },
+                    type: "POST",
+                    url: 'http://localhost:3000/withdraw',
+                    data: JSON.stringify(withdraw)
+                })
+
+                $.ajax({
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-type": "application/json"
+                    },
+                    type: "PUT",
+                    url: 'http://localhost:3000/customers/' + customerId,
+                    data: JSON.stringify(customer)
+                })
+                    .done((data) => {
+                        getAllCustomers();
+                    })
+                    .fail((jqXHR) => {
+                        console.log(jqXHR);
+                    });
+
+                $("#mdWithdraw").modal('hide');
+            } else {
+                alert("Số dư tài khoản không đủ")
+            }
+
+
+        });
+
+        // show form transfer
+        function handleShowTransferModal() {
+
+            let btnTransfer = $(".transfer");
+
+            btnTransfer.on('click', function () {
+
+                let id = $(this).data('id');
+                let fullName = $(this).data('fullname');
+                let email = $(this).data('email');
+                let phone = $(this).data('phone');
+                let address = $(this).data('address');
+                let balance = $(this).data('balance');
+
+
+
+                $("#senderId").val(id);
+                $("#senderName").val(fullName);
+                $("#senderEmail").val(email);
+                $("#senderPhone").val(phone);
+                $("#senderAddress").val(address);
+                $("#senderBalance").val(balance);
+                getRecipients(id);
+
+                $("#mdTransfer").modal('show');
+            })
+        }
+
+        function getRecipients(senderId) {
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "GET",
+                url: 'http://localhost:3000/customers'
+            })
+                .done((data) => {
+                    selectRecipient(data, senderId);
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR);
+                });
+        }
+
+        function selectRecipient(data, senderId) {
+            $('#selectRecipient').empty();
+            $.each(data, (i, item) => {
+                if (item.id != senderId) {
+                    let str = `
+                    <option value="${item.id}">
+                        (${item.id}) - ${item.fullName}
+                    </option>
+                `;
+                    let selectRecipient = $('#selectRecipient');
+                    selectRecipient.append(str);
+                }
+
+            });
+        }
+        // transfer
+        let btnTransfer = $("#btnTransfer");
+        let transfer;
+        let sender;
+        let ricipient;
+        let transferId = 1;
+
+        $("#transferAmount").on("input", function () {
+            let transferAmount = +$(this).val();
+            let fees = 10;
+            let feesAmount = transferAmount * fees / 100;
+            let transactionAmount = transferAmount + feesAmount;
+
+            $("#transactionAmountTr").val(transactionAmount);
+        });
+
+        btnTransfer.on('click', () => {
+
+            let senderId = +$("#senderId").val();
+            let senderName = $('#senderName').val();
+            let senderEmail = $('#senderEmail').val();
+            let senderPhone = $('#senderPhone').val();
+            let senderAddress = $('#senderAddress').val();
+            let balanceSender = +$('#senderBalance').val();
+
+            let recipientId = +$("#selectRecipient").val();
+            console.log(recipientId);
+            let recipientBalance;
+            $.each(listCustomer, (i, item) => {
+                if (item.id == recipientId) {
+                    recipientBalance = item.balance;
+                }
+            });
+
+            let transferAmount = +$('#transferAmount').val();
+            let fees = +$("#fees").val();
+            let feesAmout = transferAmount * fees / 100;
+            let transactionAmount = transferAmount + feesAmout;
+            let newBalanceSender;
+
+            if (balanceSender >= transactionAmount) {
+                newBalanceSender = balanceSender - transactionAmount;
+                let newBalanceRicipient;
+                if (recipientBalance >= 0) {
+                    newBalanceRicipient = recipientBalance + transferAmount;
+                }
+
+                transfer = new Transfer(transferId, senderId, recipientId, fees, feesAmout, transferAmount, transactionAmount);
+                delete transfer.id;
+                transferId++;
+
+                sender = new Customer(senderId, senderName, senderEmail, senderPhone, senderAddress, newBalanceSender, 0);
+
+                $.ajax({
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-type": "application/json"
+                    },
+                    type: "POST",
+                    url: 'http://localhost:3000/transfer',
+                    data: JSON.stringify(transfer)
+                })
+
+                $.ajax({
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-type": "application/json"
+                    },
+                    type: "PUT",
+                    url: 'http://localhost:3000/customers/' + senderId,
+                    data: JSON.stringify(sender)
+                })
+                $.ajax({
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-type": "application/json"
+                    },
+                    type: "PATCH",
+                    url: 'http://localhost:3000/customers/' + recipientId,
+                    data: JSON.stringify({
+                        "balance": newBalanceRicipient
+                    })
+                })
+                    .done((data) => {
+                        getAllCustomers();
+                    })
+                    .fail((jqXHR) => {
+                        console.log(jqXHR);
+                    });
+
+                $("#mdTransfer").modal('hide');
+            } else {
+                alert("Số dư tài khoản không đủ")
+            }
+
+        });
+
+        // Transfer Infomation
+        let listTransfer = [];
+        function getAllTransfer() {
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "GET",
+                url: 'http://localhost:3000/transfer'
+            })
+                .done((data) => {
+                    listTransfer = data;
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR);
+                });
+        }
+        
+
+        function showTransferInfo() {
+            let btnTransferInfo = $(".transferInfo");
+            getAllTransfer();
+            btnTransferInfo.on('click', function () {
+                let totalFeesAmount = 0;
+
+                $.each(listTransfer, (i, transfer) => {
+                    let senderName;
+                    let recipientName;
+
+                    $.each(listCustomer, (i, customer) => {
+                        if (transfer.senderId == customer.id) {
+                            senderName = customer.fullName;
+                        }
+                        if (transfer.recipientId == customer.id) {
+                            recipientName = customer.fullName;
+                        }
+                    });
+
+                    let str = `
+                        <tr>
+                            <td class="text-center">${transfer.id}</td>
+                            <td class="text-center">${transfer.senderId}</td>
+                            <td>${senderName}</td>
+                            <td class="text-center">${transfer.recipientId}</td>
+                            <td>${recipientName}</td>
+                            <td class="text-end num-comma pr-20">${transfer.transferAmount}</td>
+                            <td class="text-center">${transfer.fees}</td>
+                            <td class="text-end num-comma pr-20">${transfer.feesAmount}</td>
+                        </tr>
+                `;
+                    let tbTransferInfo = $('.tbTransferInfo tbody');
+                    tbTransferInfo.append(str);
+                    totalFeesAmount += transfer.feesAmount;
+                });
+                console.log(totalFeesAmount);
+                $("#totalFeesAmount").val(totalFeesAmount);
+                $("#mdTransferInfo").modal('show');
+            })
+        }
+    </script>
 </body>
+
 </html>
