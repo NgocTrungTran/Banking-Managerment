@@ -69,8 +69,11 @@
         let customer;
         let customers = [];
         let listTransfer = [];
-        getAllCustomers();
-        getAllTransfers();
+        function init() {
+            getAllCustomers();
+            getAllTransfers();
+        }
+        init();
 
         function getAllCustomers() {
             $.ajax({
@@ -114,7 +117,7 @@
             let totalFeesAmount = 0;
             $('#tbCustomer tbody').empty();
             $.each(data, (i, item) => {
-                
+
                 console.log(customers);
                 $.each(customers, (i, customer) => {
                     if (item.senderId == customer.id) {
