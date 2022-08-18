@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-sm-7">
                     <button class="btn btn-outline-light" type="button" data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop">
+                        data-bs-target="#mdCreate">
                         <i class="fa fa-plus-square-o" aria-hidden="true"></i>
                         <span>Add New Customer</span>
                     </button>
@@ -55,7 +55,7 @@
     <!-- End container -->
 
     <!-- Craete Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="modal fade" id="mdCreate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -64,7 +64,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="frmCreate" action="">
+                    <div class="modal-alert-danger hide" id="createErr"></div>
+                    <form id="frmCreate" action="" method="post">
                         <div class="row mt-3">
                             <div class="col-lg-6">
                                 <label for="fullName" class="fw-bold">Full Name</label>
@@ -111,7 +112,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="frmUpdate" action="">
+                    <!-- <div class="modal-alert-danger hide"></div> -->
+                    <form id="frmUpdate" action="" method="post">
                         <div class="row mt-3">
                             <input type="hidden" id="idUp">
                             <input type="hidden" id="balanceUp">
@@ -158,7 +160,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="frmDelete" action="">
+                    <form id="frmDelete" action="" method="post">
                         <div class="row mt-3">
                             <input type="hidden" id="idDel">
                             <div class="col-lg-6">
@@ -203,7 +205,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="frmDeposit" action="">
+                    <form id="frmDeposit" action="" method="post">
                         <div class="row mt-3">
                             <div class="col-lg-6">
                                 <label for="idCus" class="fw-bold">Customer Id</label>
@@ -249,7 +251,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="frmDeposit" action="">
+                    <form id="frmWithdraw" action="" method="post">
                         <div class="row mt-3">
                             <div class="col-lg-6">
                                 <label for="idCus" class="fw-bold">Customer Id</label>
@@ -377,6 +379,7 @@
     <!-- End transfer modal -->
 
     <script src="./assets/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="./assets/node_modules/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="./assets/js/bootstrap.bundle.min.js"></script>
     <script src="./js/model.js"></script>
     <script src="./assets/node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
@@ -389,11 +392,6 @@
         }
         init();
 
-        function initTooltip() {
-            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-        }
-
         function getAllCustomers() {
             $.ajax({
                 headers: {
@@ -401,7 +399,7 @@
                     "Content-type": "application/json"
                 },
                 type: "GET",
-                url: 'http://localhost:3000/customers'
+                url: 'http://localhost:3000/customers?deleted=0'
             })
                 .done((data) => {
                     drawCustomers(data);
@@ -429,11 +427,25 @@
                 });
         }
 
-        function removeEventShowUpdateModal() {
+        function removeEventShowModal() {
             $(".edit").off();
+            $(".deposit").off();
+            $(".withdraw").off();
+            $(".transfer").off();
+
         }
 
+        function handleShowModal() {
+            removeEventShowModal();
+            handleShowUpdateModal();
 
+            handleShowDeleteModal();
+            handleShowDepositModal();
+            handleShowWithdrawModal();
+            handleShowTransferModal();
+        }
+
+        // Show list customer
         function drawCustomers(data) {
             $('#tbCustomer tbody').empty();
             $.each(data, (i, item) => {
@@ -478,21 +490,12 @@
 
             initTooltip();
 
-            removeEventShowUpdateModal();
-            handleShowUpdateModal();
-
-            handleShowDeleteModal();
-            handleShowDepositModal();
-            handleShowWithdrawModal();
-            handleShowTransferModal();
-
-
+            handleShowModal();
         }
 
-        let btnCreate = $('#btnCreate');
+        // Create
 
-        btnCreate.on('click', () => {
-
+        function doCreate() {
             let fullName = $('#fullName').val();
             let email = $('#email').val();
             let phone = $('#phone').val();
@@ -551,12 +554,7 @@
                     tbCustomer.prepend(str);
 
                     initTooltip();
-                    removeEventShowUpdateModal();
-                    handleShowUpdateModal();
-                    handleShowDeleteModal();
-                    handleShowDepositModal();
-                    handleShowWithdrawModal();
-                    handleShowTransferModal();
+                    handleShowModal();
 
                     Swal.fire({
                         // position: 'top-end',
@@ -571,6 +569,12 @@
                     console.log(jqXHR);
                 });
 
+        }
+
+        let btnCreate = $('#btnCreate');
+
+        btnCreate.on('click', () => {
+            $("#frmCreate").submit();
         });
 
         // show form update
@@ -603,9 +607,8 @@
         }
 
         // update customer
-        let btnUpdate = $("#btnUpdate");
 
-        btnUpdate.on('click', () => {
+        function doUpdate() {
             let customerId = +$("#idUp").val();
             let fullName = $('#fullNameUp').val();
             let email = $('#emailUp').val();
@@ -626,54 +629,9 @@
             })
                 .done((item) => {
 
-                    let str = `
-                    <tr id="tr_${item.id}">
-                        <td>${item.id}</td>
-                        <td>${item.fullName}</td>
-                        <td>${item.email}</td>
-                        <td class="text-center">${item.phone}</td>
-                        <td>${item.address}</td>
-                        <td class="text-end">${item.balance}</td>
-                        <td style="text-align: center;">
-                            <button class="btn btn-outline-secondary edit" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Update">
-                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                            </button>
-                        </td>
-                        <td style="text-align: center;">
-                            <button class="btn btn-outline-success deposit" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Deposit">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
-                            </button>
-                        </td>
-                        <td style="text-align: center;">
-                            <button class="btn btn-outline-warning withdraw" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Withdraw">
-                                <i class="fa fa-minus" aria-hidden="true"></i>
-                            </button>
-                        </td>
-                        <td style="text-align: center;">
-                            <button class="btn btn-outline-primary transfer" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Transfer">
-                                <i class="fa fa-exchange" aria-hidden="true"></i>
-                            </button>
-                        </td>
-                        <td style="text-align: center;">
-                            <button class="btn btn-outline-danger delete" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete">
-                                <i class="fa fa-ban" aria-hidden="true"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-
-                    let currentRow = $("#tr_" + item.id);
-                    currentRow.replaceWith(str);
-
+                    drawCustomer(item);
+                    
                     $("#mdUpdate").modal('hide');
-
-                    initTooltip();
-                    removeEventShowUpdateModal();
-                    handleShowUpdateModal();
-                    handleShowDeleteModal();
-                    handleShowDepositModal();
-                    handleShowWithdrawModal();
-                    handleShowTransferModal();
 
                     Swal.fire({
                         // position: 'top-end',
@@ -686,6 +644,12 @@
                 .fail((jqXHR) => {
                     console.log(jqXHR);
                 });
+        }
+
+        let btnUpdate = $("#btnUpdate");
+
+        btnUpdate.on('click', () => {
+            $("#frmUpdate").submit();
         });
 
 
@@ -738,8 +702,11 @@
                             "Accept": "application/json",
                             "Content-type": "application/json"
                         },
-                        type: "DELETE",
+                        type: "PATCH",
                         url: 'http://localhost:3000/customers/' + customerId,
+                        data: JSON.stringify({
+                            "deleted": 1
+                        })
                     })
                         .done((data) => {
                             $('#tr_' + customerId).remove();
@@ -792,127 +759,88 @@
             })
         }
         // deposit
+
         let btnDeposit = $("#btnDeposit");
         let deposit;
         let depositId = 1;
-        btnDeposit.on('click', () => {
+        function doDeposit() {
 
             let customerId = +$("#idCus").val();
-            let fullName = $('#fullNameCus').val();
-            let balance = +$('#balanceCus').val();
             let transactionAmount = +$('#transactionAmountDe').val();
 
-            let newBalance;
+            getCustomerById(customerId).then(() => {
+                let balance = +$('#balanceCus').val();
+                let newBalance;
 
-            newBalance = balance + transactionAmount;
+                newBalance = balance + transactionAmount;
 
-            if (newBalance > 100000000000) {
-                Swal.fire({
-                    // position: 'top-end',
-                    icon: 'warring',
-                    title: 'Warring!',
-                    text: "Please check balance limit or contact the administrator!",
-                    showConfirmButton: true,
-                    // timer: 1500
-                })
-                return;
-            }
-
-            deposit = new Deposit(0, customerId, transactionAmount);
-            delete deposit.id;
-            depositId++;
-
-            $.ajax({
-                headers: {
-                    "Accept": "application/json",
-                    "Content-type": "application/json"
-                },
-                type: "POST",
-                url: 'http://localhost:3000/deposit',
-                data: JSON.stringify(deposit)
-            })
-                .done((data) => {
-                    $.ajax({
-                        headers: {
-                            "Accept": "application/json",
-                            "Content-type": "application/json"
-                        },
-                        type: "PATCH",
-                        url: 'http://localhost:3000/customers/' + customerId,
-                        data: JSON.stringify({
-                            "balance": newBalance
-                        })
-                    })
-                        .done((item) => {
-                            let str = `
-                                <tr id="tr_${item.id}">
-                                    <td>${item.id}</td>
-                                    <td>${item.fullName}</td>
-                                    <td>${item.email}</td>
-                                    <td class="text-center">${item.phone}</td>
-                                    <td>${item.address}</td>
-                                    <td class="text-end">${item.balance}</td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-secondary edit" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Update">
-                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-success deposit" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Deposit">
-                                            <i class="fa fa-plus" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-warning withdraw" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Withdraw">
-                                            <i class="fa fa-minus" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-primary transfer" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Transfer">
-                                            <i class="fa fa-exchange" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-danger delete" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete">
-                                            <i class="fa fa-ban" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            `;
-
-                            let currentRow = $("#tr_" + item.id);
-                            currentRow.replaceWith(str);
-
-                            $("#mdDeposit").modal('hide');
-
-                            initTooltip();
-                            removeEventShowUpdateModal();
-                            handleShowUpdateModal();
-                            handleShowDeleteModal();
-                            handleShowDepositModal();
-                            handleShowWithdrawModal();
-                            handleShowTransferModal();
-                        })
-                        .fail((jqXHR) => {
-                            console.log(jqXHR);
-                        });
-
+                if (newBalance > 100000000000) {
                     Swal.fire({
                         // position: 'top-end',
-                        icon: 'success',
-                        title: 'Deposit Successfully',
-                        showConfirmButton: false,
-                        timer: 1500
+                        icon: 'warning',
+                        title: 'Warring!',
+                        text: "Please check balance limit or contact the administrator!",
+                        showConfirmButton: true,
+                        // timer: 1500
                     })
+                    $('#frmDeposit')[0].reset();
+                    return;
+                }
+
+                deposit = new Deposit(0, customerId, transactionAmount);
+                delete deposit.id;
+                depositId++;
+
+                $.ajax({
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-type": "application/json"
+                    },
+                    type: "POST",
+                    url: 'http://localhost:3000/deposit',
+                    data: JSON.stringify(deposit)
                 })
-                .fail((jqXHR) => {
-                    console.log(jqXHR);
-                });
+                    .done((data) => {
+                        $.ajax({
+                            headers: {
+                                "Accept": "application/json",
+                                "Content-type": "application/json"
+                            },
+                            type: "PATCH",
+                            url: 'http://localhost:3000/customers/' + customerId,
+                            data: JSON.stringify({
+                                "balance": newBalance
+                            })
+                        })
+                            .done((item) => {
+                                drawCustomer(item);
+                                
+                                $('#frmDeposit')[0].reset();
+                                $("#mdDeposit").modal('hide');
+                            })
+                            .fail((jqXHR) => {
+                                console.log(jqXHR);
+                            });
 
+                        Swal.fire({
+                            // position: 'top-end',
+                            icon: 'success',
+                            title: 'Deposit Successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    })
+                    .fail((jqXHR) => {
+                        console.log(jqXHR);
+                    });
+            })
+                .catch(() => {
 
+                })
+        }
 
-
-
+        btnDeposit.on('click', () => {
+            $("#frmDeposit").submit();
         });
 
         // show withdraw form
@@ -946,9 +874,8 @@
         // withdraw
         let btnWithdraw = $("#btnWithdraw");
         let withdraw;
-        let withdrawId = 1;
-        btnWithdraw.on('click', () => {
 
+        function doWithdraw() {
             let customerId = +$("#idCus1").val();
             let balance = +$('#balanceCus1').val();
             let transactionAmount = +$('#transactionAmountWi').val();
@@ -984,54 +911,9 @@
                             })
                         })
                             .done((item) => {
-                                let str = `
-                                <tr id="tr_${item.id}">
-                                    <td>${item.id}</td>
-                                    <td>${item.fullName}</td>
-                                    <td>${item.email}</td>
-                                    <td class="text-center">${item.phone}</td>
-                                    <td>${item.address}</td>
-                                    <td class="text-end">${item.balance}</td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-secondary edit" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Update">
-                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-success deposit" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Deposit">
-                                            <i class="fa fa-plus" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-warning withdraw" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Withdraw">
-                                            <i class="fa fa-minus" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-primary transfer" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Transfer">
-                                            <i class="fa fa-exchange" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-danger delete" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete">
-                                            <i class="fa fa-ban" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            `;
-
-                                let currentRow = $("#tr_" + item.id);
-                                currentRow.replaceWith(str);
-
+                                drawCustomer(item);
                                 $("#mdWithdraw").modal('hide');
-
-                                initTooltip();
-                                removeEventShowUpdateModal();
-                                handleShowUpdateModal();
-                                handleShowDeleteModal();
-                                handleShowDepositModal();
-                                handleShowWithdrawModal();
-                                handleShowTransferModal();
+                                $('#frmWithdraw')[0].reset();
                             })
                             .fail((jqXHR) => {
                                 console.log(jqXHR);
@@ -1058,8 +940,10 @@
                     timer: 2000
                 })
             }
-
-
+        }
+        let withdrawId = 1;
+        btnWithdraw.on('click', () => {
+            $("#frmWithdraw").submit();
         });
 
         // show form transfer
@@ -1119,14 +1003,11 @@
                     let selectRecipient = $('#selectRecipient');
                     selectRecipient.append(str);
                 }
-
             });
         }
         // transfer
         let btnTransfer = $("#btnTransfer");
         let transfer;
-        let sender;
-        let ricipient;
         let transferId = 1;
 
         $("#transferAmount").on("input", function () {
@@ -1138,8 +1019,7 @@
             $("#transactionAmountTr").val(transactionAmount);
         });
 
-        btnTransfer.on('click', () => {
-
+        function doTransfer() {
             let senderId = +$("#senderId").val();
             let senderName = $('#senderName').val();
             let senderEmail = $('#senderEmail').val();
@@ -1159,188 +1039,414 @@
             let transactionAmount = transferAmount + feesAmout;
             let newBalanceSender;
 
-            if (balanceSender >= transactionAmount) {
-                newBalanceSender = balanceSender - transactionAmount;
-                let newBalanceRicipient;
+            getCustomerById(senderId).then(() => {
+                getCustomerById(recipientId).then(() => {
+                    if (senderId == recipientId) {
+                        Swal.fire({
+                            // position: 'top-end',
+                            icon: 'warning',
+                            title: 'Warring!',
+                            text: "Recipient invalid",
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        return;
+                    }
+                    if (transferAmount < 10000 || transferAmount > 100000000) {
+                        Swal.fire({
+                            // position: 'top-end',
+                            icon: 'warning',
+                            title: 'Warring!',
+                            text: "TransferAmount invalid! Between 10.000 and 100.000.000",
+                            showConfirmButton: true,
+                            // timer: 1500
+                        })
+                        return;
+                    }
+                    if (balanceSender >= transactionAmount) {
+                        newBalanceSender = balanceSender - transactionAmount;
 
-                newBalanceRicipient = recipientBalance + transferAmount;
-                if (newBalanceRicipient > 100000000000) {
-                    Swal.fire({
-                        // position: 'top-end',
-                        icon: 'warring',
-                        title: 'Warring!',
-                        text: "Please check the recipient's balance limit or contact the administrator!",
-                        showConfirmButton: true,
-                        // timer: 1500
-                    })
-                    return;
-                }
+                        let newBalanceRicipient;
 
-                transfer = new Transfer(transferId, senderId, recipientId, fees, feesAmout, transferAmount, transactionAmount);
-                delete transfer.id;
-                transferId++;
+                        newBalanceRicipient = recipientBalance + transferAmount;
+
+                        if (newBalanceRicipient > 100000000000) {
+                            Swal.fire({
+                                // position: 'top-end',
+                                icon: 'warning',
+                                title: 'Warring!',
+                                text: "Please check the recipient's balance limit or contact the administrator!",
+                                showConfirmButton: true,
+                                // timer: 1500
+                            })
+                            return;
+                        }
+
+                        transfer = new Transfer(transferId, senderId, recipientId, fees, feesAmout, transferAmount, transactionAmount);
+                        delete transfer.id;
+                        transferId++;
 
 
-                $.ajax({
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-type": "application/json"
-                    },
-                    type: "POST",
-                    url: 'http://localhost:3000/transfer',
-                    data: JSON.stringify(transfer)
-                })
-                    .done((data) => {
                         $.ajax({
                             headers: {
                                 "Accept": "application/json",
                                 "Content-type": "application/json"
                             },
-                            type: "PATCH",
-                            url: 'http://localhost:3000/customers/' + senderId,
-                            data: JSON.stringify({
-                                "balance": newBalanceSender
-                            })
+                            type: "POST",
+                            url: 'http://localhost:3000/transfer',
+                            data: JSON.stringify(transfer)
                         })
-                            .done((item) => {
-                                let str = `
-                                <tr id="tr_${item.id}">
-                                    <td>${item.id}</td>
-                                    <td>${item.fullName}</td>
-                                    <td>${item.email}</td>
-                                    <td class="text-center">${item.phone}</td>
-                                    <td>${item.address}</td>
-                                    <td class="text-end">${item.balance}</td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-secondary edit" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Update">
-                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-success deposit" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Deposit">
-                                            <i class="fa fa-plus" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-warning withdraw" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Withdraw">
-                                            <i class="fa fa-minus" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-primary transfer" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Transfer">
-                                            <i class="fa fa-exchange" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-outline-danger delete" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete">
-                                            <i class="fa fa-ban" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            `;
-
-                                let currentRow = $("#tr_" + item.id);
-                                currentRow.replaceWith(str);
-
-                                initTooltip();
-                                removeEventShowUpdateModal();
-                                handleShowUpdateModal();
-                                handleShowDeleteModal();
-                                handleShowDepositModal();
-                                handleShowWithdrawModal();
-                                handleShowTransferModal();
-
+                            .done((data) => {
                                 $.ajax({
                                     headers: {
                                         "Accept": "application/json",
                                         "Content-type": "application/json"
                                     },
                                     type: "PATCH",
-                                    url: 'http://localhost:3000/customers/' + recipientId,
+                                    url: 'http://localhost:3000/customers/' + senderId,
                                     data: JSON.stringify({
-                                        "balance": newBalanceRicipient
+                                        "balance": newBalanceSender
                                     })
                                 })
                                     .done((item) => {
-                                        let str = `
-                                            <tr id="tr_${item.id}">
-                                                <td>${item.id}</td>
-                                                <td>${item.fullName}</td>
-                                                <td>${item.email}</td>
-                                                <td class="text-center">${item.phone}</td>
-                                                <td>${item.address}</td>
-                                                <td class="text-end">${item.balance}</td>
-                                                <td style="text-align: center;">
-                                                    <button class="btn btn-outline-secondary edit" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Update">
-                                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                                    </button>
-                                                </td>
-                                                <td style="text-align: center;">
-                                                    <button class="btn btn-outline-success deposit" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Deposit">
-                                                        <i class="fa fa-plus" aria-hidden="true"></i>
-                                                    </button>
-                                                </td>
-                                                <td style="text-align: center;">
-                                                    <button class="btn btn-outline-warning withdraw" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Withdraw">
-                                                        <i class="fa fa-minus" aria-hidden="true"></i>
-                                                    </button>
-                                                </td>
-                                                <td style="text-align: center;">
-                                                    <button class="btn btn-outline-primary transfer" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Transfer">
-                                                        <i class="fa fa-exchange" aria-hidden="true"></i>
-                                                    </button>
-                                                </td>
-                                                <td style="text-align: center;">
-                                                    <button class="btn btn-outline-danger delete" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete">
-                                                        <i class="fa fa-ban" aria-hidden="true"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        `;
+                                        drawCustomer(item);
 
-                                        let currentRow = $("#tr_" + item.id);
-                                        currentRow.replaceWith(str);
 
-                                        initTooltip();
-                                        removeEventShowUpdateModal();
-                                        handleShowUpdateModal();
-                                        handleShowDeleteModal();
-                                        handleShowDepositModal();
-                                        handleShowWithdrawModal();
-                                        handleShowTransferModal();
-
-                                        $("#mdTransfer").modal('hide');
-                                        Swal.fire({
-                                            // position: 'top-end',
-                                            icon: 'success',
-                                            title: 'Transfer Successfully',
-                                            showConfirmButton: false,
-                                            timer: 1500
+                                        $.ajax({
+                                            headers: {
+                                                "Accept": "application/json",
+                                                "Content-type": "application/json"
+                                            },
+                                            type: "PATCH",
+                                            url: 'http://localhost:3000/customers/' + recipientId,
+                                            data: JSON.stringify({
+                                                "balance": newBalanceRicipient
+                                            })
                                         })
+                                            .done((item) => {
+                                                drawCustomer(item);
+
+                                                $('#frmTransfer')[0].reset();
+
+                                                $("#mdTransfer").modal('hide');
+                                                Swal.fire({
+                                                    // position: 'top-end',
+                                                    icon: 'success',
+                                                    title: 'Transfer Successfully',
+                                                    showConfirmButton: false,
+                                                    timer: 1500
+                                                })
+                                            })
+                                            .fail((jqXHR) => {
+                                                console.log(jqXHR);
+                                            });
                                     })
                                     .fail((jqXHR) => {
                                         console.log(jqXHR);
                                     });
-
                             })
                             .fail((jqXHR) => {
                                 console.log(jqXHR);
                             });
-                    })
-                    .fail((jqXHR) => {
-                        console.log(jqXHR);
-                    });
-            } else {
-                Swal.fire({
-                    title: "Oops...",
-                    text: "Your balance not enough",
-                    icon: 'error',
-                    showConfirmButton: false,
-                    timer: 2000
+                    } else {
+                        Swal.fire({
+                            title: "Oops...",
+                            text: "Your balance not enough",
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                    }
                 })
-            }
+                    .catch(() => {
+                        Swal.fire({
+                            // position: 'top-end',
+                            icon: 'question',
+                            title: 'Danger!',
+                            text: "Recipient not exists!",
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                    })
+            })
+                .catch(() => {
+                    Swal.fire({
+                        // position: 'top-end',
+                        icon: 'question',
+                        title: 'Danger!',
+                        text: "Sender not exists!",
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                })
 
+
+        }
+
+        btnTransfer.on('click', () => {
+            $("#frmTransfer").submit();
         });
+
+        // tooltip for action
+        function initTooltip() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        }
+
+        /* Validation by JQuery*/
+
+        // Create form validate
+        $("#mdCreate").on('hidden.bs.modal', () => {
+            $("#mdCreate .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#frmCreate").validate().resetForm();
+        })
+
+        $("#frmCreate").validate({
+            rules: {
+                fullName: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 30
+                },
+                email: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 30,
+                    valid_email: true
+                },
+                phone: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 20
+                },
+                address: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 50
+                }
+            },
+            messages: {
+                fullName: {
+                    required: "Please enter your full name",
+                    minlength: "Minimum name length is 5",
+                    maxlength: "The maximum name length is 30"
+                },
+                email: {
+                    required: "Please enter your email",
+                    minlength: "Minimum email length is 5",
+                    maxlength: "The maximum email length is 30"
+                },
+                phone: {
+                    required: "Please enter your phone",
+                    minlength: "Minimum phone length is 10",
+                    maxlength: "The maximum phone length is 20"
+                },
+                address: {
+                    required: "Please enter your address",
+                    minlength: "Minimum address length is 5",
+                    maxlength: "The maximum address length is 50"
+                }
+            },
+            errorLabelContainer: "#mdCreate .modal-alert-danger",
+            errorPlacement: function (error, element) {
+                error.appendTo("#mdCreate .modal-alert-danger");
+            },
+            showErrors: function (errorMap, errorList) {
+                if (this.numberOfInvalids() > 0) {
+                    $("#mdCreate .modal-alert-danger").removeClass("hide").addClass("show");
+                } else {
+                    $("#mdCreate .modal-alert-danger").removeClass("show").addClass("hide").empty();
+                    $("#frmCreate input.error").removeClass("error");
+                }
+                this.defaultShowErrors();
+            },
+            submitHandler: function () {
+                doCreate();
+            }
+        })
+
+        $.validator.addMethod('valid_email', function (value) {
+            var regex = /^[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{1,5}$/;
+            return value.trim().match(regex);
+        }, "(Email invalid!)");
+
+
+        // Update form validate
+        $("#mdUpdate").on('hidden.bs.modal', () => {
+            $("#mdUpdate .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#frmUpdate").validate().resetForm();
+        })
+
+        $("#frmUpdate").validate({
+            rules: {
+                fullNameUp: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 30
+                },
+                emailUp: {
+                    required: true,
+                    // email: true,
+                    minlength: 5,
+                    maxlength: 30
+                },
+                phoneUp: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 20
+                },
+                addressUp: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 50
+                }
+            },
+            messages: {
+                fullNameUp: {
+                    required: "(Please enter your full name)",
+                    minlength: "(Minimum name length is 5)",
+                    maxlength: "(The maximum name length is 30)"
+                },
+                emailUp: {
+                    required: "(Please enter your email)",
+                    minlength: "(Minimum emali length is 5)",
+                    maxlength: "(The maximum emali length is 30)"
+                },
+                phoneUp: {
+                    required: "(Please enter your phone)",
+                    minlength: "(Minimum phone length is 10)",
+                    maxlength: "(The maximum phone length is 20)"
+                },
+                addressUp: {
+                    required: "(Please enter your address)",
+                    minlength: "(Minimum address length is 5)",
+                    maxlength: "(The maximum address length is 50)"
+                }
+            },
+
+            submitHandler: function () {
+                doUpdate();
+            }
+        })
+
+        // Deposit validate
+        $("#mdDeposit").on('hidden.bs.modal', () => {
+            $("#mdDeposit .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#frmDeposit").validate().resetForm();
+        })
+
+        $("#frmDeposit").validate({
+            rules: {
+                transactionAmountDe: {
+                    required: true,
+                    isNumberWithSpace: true
+                }
+            },
+            messages: {
+                transactionAmountDe: {
+                    required: "(Please enter transaction amount)",
+                }
+            },
+
+            submitHandler: function () {
+                doDeposit();
+            }
+        })
+
+        // Withdraw validate
+        $("#mdWithdraw").on('hidden.bs.modal', () => {
+            $("#mdWithdraw .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#frmWithdraw").validate().resetForm();
+        })
+
+        $("#frmWithdraw").validate({
+            rules: {
+                transactionAmountWi: {
+                    required: true,
+                    isNumberWithSpace: true
+                }
+            },
+            messages: {
+                transactionAmountWi: {
+                    required: "(Please enter transaction amount)",
+                }
+            },
+            submitHandler: function () {
+                doWithdraw();
+            }
+        })
+
+        // Transfer validate
+        $("#mdTransfer").on('hidden.bs.modal', () => {
+            $("#mdTransfer .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#frmTransfer").validate().resetForm();
+        })
+
+        $("#frmTransfer").validate({
+            rules: {
+                transferAmount: {
+                    required: true,
+                    isNumberWithSpace: true
+                }
+            },
+            messages: {
+                transferAmount: {
+                    required: "(Please enter transfer amount)",
+                }
+            },
+            submitHandler: function () {
+                doTransfer();
+            }
+        })
+
+        $.validator.addMethod("isNumberWithSpace", function (value, element) {
+            return this.optional(element) || /^\s*[0-9,\s]+\s*$/i.test(value);
+        }, "(Please enter number)");
+
+        // draw customer
+        function drawCustomer(item) {
+            let str = `
+                    <tr id="tr_${item.id}">
+                        <td>${item.id}</td>
+                        <td>${item.fullName}</td>
+                        <td>${item.email}</td>
+                        <td class="text-center">${item.phone}</td>
+                        <td>${item.address}</td>
+                        <td class="text-end">${item.balance}</td>
+                        <td style="text-align: center;">
+                            <button class="btn btn-outline-secondary edit" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Update">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                        <td style="text-align: center;">
+                            <button class="btn btn-outline-success deposit" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Deposit">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                        <td style="text-align: center;">
+                            <button class="btn btn-outline-warning withdraw" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Withdraw">
+                                <i class="fa fa-minus" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                        <td style="text-align: center;">
+                            <button class="btn btn-outline-primary transfer" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Transfer">
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                        <td style="text-align: center;">
+                            <button class="btn btn-outline-danger delete" data-id="${item.id}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete">
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+
+                    let currentRow = $("#tr_" + item.id);
+                    currentRow.replaceWith(str);
+
+                    initTooltip();
+                    handleShowModal();
+        }
     </script>
 </body>
 

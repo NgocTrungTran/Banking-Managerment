@@ -51,7 +51,7 @@
                     <td colspan="5"></td>
                     <td class="text-center fw-bold">Total Fees Amount:</td>
                     <td colspan="2" class="text-end fw-bold num-comma pr-20" style="font-size: 24px">
-                        <input type="text" id="totalFeesAmount" style="border: none; text-align: right;" disabled>
+                        <input type="text" id="totalFeesAmount" style="border: none; text-align: right; " disabled>
                     </td>
                 </tr>
             </tfoot>
@@ -70,13 +70,24 @@
         let customers = [];
         let listTransfer = [];
         function init() {
-            getAllCustomers();
-            getAllTransfers();
+
+
+            getAllCustomers().then(() => {
+                getAllTransfers();
+            })
+                .catch(() => {
+                    Swal.fire({
+                        title: "Unknown Error",
+                        icon: 'error',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                });
         }
         init();
 
         function getAllCustomers() {
-            $.ajax({
+            return $.ajax({
                 headers: {
                     "Accept": "application/json",
                     "Content-type": "application/json"
@@ -94,7 +105,7 @@
         }
 
         function getAllTransfers() {
-            $.ajax({
+            return $.ajax({
                 headers: {
                     "Accept": "application/json",
                     "Content-type": "application/json"
