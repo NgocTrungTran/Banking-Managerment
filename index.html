@@ -61,7 +61,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="staticBackdropLabel">Add new customer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btnClose" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="modal-alert-danger hide" id="createErr"></div>
@@ -94,7 +94,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" id="btnCreate">Create</button>
                 </div>
             </div>
@@ -109,7 +109,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Update</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btnClose" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <!-- <div class="modal-alert-danger hide"></div> -->
@@ -139,7 +139,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Close</button>
                     <button type="button" id="btnUpdate" class="btn btn-outline-secondary">
                         <i class="fa-solid fa-pen-to-square"></i>
                         Save changes
@@ -157,7 +157,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btnClose" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="frmDelete" action="" method="post">
@@ -185,7 +185,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Close</button>
                     <button type="button" id="btnDelete" class="btn btn-outline-danger">
                         <i class="fa-solid fa-pen-to-square"></i>
                         Delete
@@ -202,7 +202,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Deposit</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btnClose" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="frmDeposit" action="" method="post">
@@ -230,7 +230,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Close</button>
                     <button type="button" id="btnDeposit" class="btn btn-outline-success">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                         Deposit
@@ -248,7 +248,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Witdraw</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btnClose" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="frmWithdraw" action="" method="post">
@@ -279,7 +279,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Close</button>
                     <button type="button" id="btnWithdraw" class="btn btn-outline-warning">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                         Withdraw
@@ -297,7 +297,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Transfer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btnClose" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="frmTransfer">
@@ -367,7 +367,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Close</button>
                     <button type="button" id="btnTransfer" class="btn btn-outline-primary">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                         Transfer
@@ -1061,6 +1061,7 @@
                             showConfirmButton: true,
                             // timer: 1500
                         })
+                        $('#frmTransfer')[0].reset();
                         return;
                     }
                     if (balanceSender >= transactionAmount) {
@@ -1079,6 +1080,7 @@
                                 showConfirmButton: true,
                                 // timer: 1500
                             })
+                            $('#frmTransfer')[0].reset();
                             return;
                         }
 
@@ -1193,6 +1195,15 @@
             const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
         }
 
+// reset form then close
+        let btnClose = $(".btnClose");
+        btnClose.on('click', () => {
+            $('#frmCreate')[0].reset();
+            $('#frmUpdate')[0].reset();
+            $('#frmDeposit')[0].reset();
+            $('#frmWithdraw')[0].reset();
+            $('#frmTransfer')[0].reset();
+        });
         /* Validation by JQuery*/
 
         // Create form validate
