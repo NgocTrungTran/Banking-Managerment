@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Customer</title>
+    <link rel="shortcut icon" href="https://vanphongxanh.vn/wp-content/uploads/2022/03/logo-social.png">
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/node_modules/fontawesome-4.7/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./assets/node_modules/sweetalert2/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="./assets/css/style2.css">
+</head>
+
+<body>
+
+    <div class="container-fluid" id="container">
+        <div class="table-title">
+            <div class="row">
+                <div class="col-sm-5">
+                    <h1>List of customers</h1>
+                </div>
+                <div class="col-sm-7">
+                    <button class="btn btn-outline-light" type="button" data-bs-toggle="modal"
+                        data-bs-target="#mdCreate">
+                        <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                        <span>Add New Customer</span>
+                    </button>
+
+                    <a class="btn btn-outline-light transferInfo" type="button" href="transferInfo.html">
+                        <i class="fa fa-history" aria-hidden="true"></i>
+                        <span>Transfer money Information</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <table class="table table-hover table-bordered" id="tbCustomer">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>#</th>
+                    <th>Fullname</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Balance</th>
+                    <th>Province</th>
+                    <th>Dictrict</th>
+                    <th>Wadr</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+        <footer>
+
+        </footer>
+    </div>
+    <!-- End container -->
+
+    <!-- Craete Modal -->
+    <div class="modal fade" id="mdCreate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Add new customer</h5>
+                    <button type="button" class="btn-close btnClose" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hide" id="createErr"></div>
+                    <form id="frmCreate" action="" method="post">
+                        <div class="row mt-3">
+                            <div class="col-lg-4">
+                                <label for="fullName" class="fw-bold">Full Name</label>
+                                <input type="text" id="fullName" name="fullName" class="form-control">
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="email" class="fw-bold">Email</label>
+                                <input type="text" id="email" name="email" class="form-control">
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="phone" class="fw-bold">Phone</label>
+                                <input type="text" id="phone" name="phone" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-3">
+                                <label for="address" class="fw-bold">Province</label>
+                                <select name="province" id="province" class="form-select">
+                                </select>
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="address" class="fw-bold">Dictrict</label>
+                                <select name="district" id="district" class="form-select">
+                                </select>
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="address" class="fw-bold">Ward</label>
+                                <select name="ward" id="ward" class="form-select">
+                                </select>
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="address" class="fw-bold">Address</label>
+                                <input type="text" id="address" name="address" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnCreate">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- end create modal -->
+
+    <!-- Update Modal -->
+    <div class="modal fade" id="mdUpdate" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update</h5>
+                    <button type="button" class="btn-close btnClose" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- <div class="modal-alert-danger hide"></div> -->
+                    <form id="frmUpdate" action="" method="post">
+                        <div class="row mt-3">
+                            <input type="hidden" id="idUp" name="idUp">
+                            <div class="col-lg-4">
+                                <label for="fullNameUp" class="fw-bold">Full Name</label>
+                                <input type="text" id="fullNameUp" name="fullName" class="form-control">
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="emailUp" class="fw-bold">Email</label>
+                                <input type="text" id="emailUp" name="email" class="form-control">
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="phoneUp" class="fw-bold">Phone</label>
+                                <input type="text" id="phoneUp" name="phone" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-3">
+                                <label for="provinceUp" class="fw-bold">Province</label>
+                                <select name="provinceUp" id="provinceUp" class="form-select">
+                                </select>
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="districtUp" class="fw-bold">Dictrict</label>
+                                <select name="districtUp" id="districtUp" class="form-select">
+                                </select>
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="wardUp" class="fw-bold">Ward</label>
+                                <select name="wardUp" id="wardUp" class="form-select">
+                                </select>
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="addressUp" class="fw-bold">Address</label>
+                                <input type="text" id="addressUp" name="addressUp" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnUpdate" class="btn btn-outline-secondary">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End update modal -->
+
+    <!-- Delete modal -->
+    <div class="modal fade" id="mdDelete" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                    <button type="button" class="btn-close btnClose" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmDelete" action="" method="post">
+                        <div class="row mt-3">
+                            <input type="hidden" id="idDel" name="idDel">
+                            <div class="col-lg-4">
+                                <label for="fullNameDel" class="fw-bold">Full Name</label>
+                                <input type="text" id="fullNameDel" name="fullNameDel" class="form-control" readonly>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="emailDel" class="fw-bold">Email</label>
+                                <input type="text" id="emailDel" name="emailDel" class="form-control" readonly>
+                            </div>
+                            <div class="col-lg-4">
+                                <label for="phoneDel" class="fw-bold">Phone</label>
+                                <input type="text" id="phoneDel" name="phoneDel" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-3">
+                                <label for="provinceDel" class="fw-bold">Province</label>
+                                <input type="text" id="provinceDel" name="provinceDel" class="form-control" readonly>
+
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="districtDel" class="fw-bold">Dictrict</label>
+                                <input type="text" id="districtDel" name="districtDel" class="form-control" readonly>
+
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="wardDel" class="fw-bold">Ward</label>
+                                <input type="text" id="wardDel" name="wardDel" class="form-control" readonly>
+
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="addressDel" class="fw-bold">Address</label>
+                                <input type="text" id="addressDel" name="addressDel" class="form-control" disabled>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnDelete" class="btn btn-outline-danger">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit modal -->
+    <div class="modal fade" id="mdDeposit" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Deposit</h5>
+                    <button type="button" class="btn-close btnClose" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmDeposit" action="" method="post">
+                        <div class="row mt-3">
+                            <div class="col-lg-6">
+                                <label for="idCus" class="fw-bold">Customer Id</label>
+                                <input type="text" id="idCus" name="idCus" class="form-control" readonly>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="fullNameCus" class="fw-bold">Full Name</label>
+                                <input type="text" id="fullNameCus" name="fullNameCus" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="row mt-3 mb-3">
+                            <div class="col-lg-6">
+                                <label for="balanceCus" class="fw-bold">Current balance ($)</label>
+                                <input type="text" id="balanceCus" name="balanceCus" class="form-control" readonly>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="transactionAmountDe" class="fw-bold">Transaction Amount ($)</label>
+                                <input type="text" id="transactionAmountDe" name="transactionAmountDe"
+                                    class="form-control"
+                                    placeholder="Transaction amount between 10.000 and 100.000.000 VND">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnDeposit" class="btn btn-outline-success">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        Deposit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End deposit modal -->
+
+    <!-- Withdraw modal -->
+    <div class="modal fade" id="mdWithdraw" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Witdraw</h5>
+                    <button type="button" class="btn-close btnClose" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmWithdraw" action="" method="post">
+                        <div class="row mt-3">
+                            <div class="col-lg-6">
+                                <label for="idCus" class="fw-bold">Customer Id</label>
+                                <input type="text" id="idCus1" name="idCus" class="form-control" readonly>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="fullNameCus" class="fw-bold">Full Name</label>
+                                <input type="text" id="fullNameCus1" name="fullNameCus" class="form-control" readonly>
+                            </div>
+                            <input type="hidden" id="emailCus1">
+                            <input type="hidden" id="phoneCus1">
+                            <input type="hidden" id="addressCus1">
+                        </div>
+                        <div class="row mt-3 mb-3">
+                            <div class="col-lg-6">
+                                <label for="balanceCus" class="fw-bold">Current balance ($)</label>
+                                <input type="text" id="balanceCus1" name="balanceCus" class="form-control" readonly>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="transactionAmountWi" class="fw-bold">Transaction Amount ($)</label>
+                                <input type="text" id="transactionAmountWi" name="transactionAmountWi"
+                                    class="form-control"
+                                    placeholder="Transaction amount between 50.000 and 10.000.000 VND">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnWithdraw" class="btn btn-outline-warning">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        Withdraw
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End withdraw modal -->
+
+    <!-- Transfer modal -->
+    <div class="modal fade" id="mdTransfer" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Transfer</h5>
+                    <button type="button" class="btn-close btnClose" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmTransfer">
+                        <fieldset class="row g-3">
+                            <div class="form-group row">
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Sender ID</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" readonly="" id="senderId" name="idCus">
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Sender Name</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control valid" readonly="" id="senderName"
+                                            name="idCus">
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Email</label>
+                                    <div class="col-sm-12">
+                                        <input type="email" class="form-control" readonly="" id="senderEmail"
+                                            name="idCus">
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Sender balance</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control num-space" readonly="" id="senderBalance"
+                                            name="idCus">
+                                    </div>
+                                </div>
+                                <input type="hidden" id="senderPhone">
+                                <input type="hidden" id="senderAddress">
+                            </div>
+                            <div class="form-group row mb-4">
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Recipient ID</label>
+                                    <div class="col-sm-12">
+                                        <select class="form-select" id="selectRecipient">
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Transfer Amount ($)</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="transferAmount"
+                                            name="transferAmount">
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Fees (%)</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="fees" value="10" readonly="">
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-3">
+                                    <label class="col-sm-12 col-form-label">Total amount of transaction ($)</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control num-space" readonly=""
+                                            id="transactionAmountTr" name="transactionAmountTr">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnClose" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btnTransfer" class="btn btn-outline-primary">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        Transfer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End transfer modal -->
+
+    <script src="./assets/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="./assets/node_modules/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="./assets/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/appModel.js"></script>
+    <script src="./assets/node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
+    <script>
+        let listCustomer = [];
+        let customer;
+        // let location;
+        let provinces = [];
+        let districts = [];
+        let wards = [];
+
+        function init() {
+            selectAddressToCreate();
+            selectAddressToUpdate();
+            getAllCustomers();
+        }
+        init();
+
+        // API Province
+        function getAllProvinces() {
+            return $.ajax({
+                headers: {
+                    "accept": "application/json",
+                    "content-type": "application/json"
+                },
+                type: "GET",
+                url: "https://vapi.vnappmob.com/api/province/"
+            })
+                .done((data) => {
+                    $.each(data.results, (i, item) => {
+                        let str = `<option value="${item.province_id}">${item.province_name}</option>`;
+                        $("#province").append(str);
+                        $("#provinceUp").append(str);
+                    });
+                    provinces = data;
+                })
+                .fail((jqXHR) => {
+
+                })
+        }
+
+        function getAllDistrictsByProvinceId(provinceId) {
+            return $.ajax({
+                headers: {
+                    "accept": "application/json",
+                    "content-type": "application/json"
+                },
+                type: "GET",
+                url: "https://vapi.vnappmob.com/api/province/district/" + provinceId
+            })
+                .done((data) => {
+                    if (data.results.length != 0) {
+                        $('#district').empty();
+                        $('#districtUp').empty();
+
+                        $.each(data.results, (i, item) => {
+                            let str = `<option value="${item.district_id}">${item.district_name}</option>`;
+                            $("#district").append(str);
+                            $("#districtUp").append(str);
+                        });
+                        districts = data;
+                    } else {
+                        Swal.fire({
+                            title: "Province invalid!",
+                            icon: 'question',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                })
+                .fail((jqXHR) => {
+
+                })
+        }
+
+        function getAllWardsByDistrictId(districtId) {
+            return $.ajax({
+                headers: {
+                    "accept": "application/json",
+                    "content-type": "application/json"
+                },
+                type: "GET",
+                url: "https://vapi.vnappmob.com/api/province/ward/" + districtId
+            })
+                .done((data) => {
+                    if (data.results.length != 0) {
+                        $('#ward').empty();
+                        $('#wardUp').empty();
+
+                        $.each(data.results, (i, item) => {
+                            let str = `<option value="${item.ward_id}">${item.ward_name}</option>`;
+                            $("#ward").append(str);
+                            $("#wardUp").append(str);
+                        });
+                        wards = data;
+                    }
+                    else {
+                        Swal.fire({
+                            title: "District invalid!",
+                            icon: 'question',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+
+                })
+                .fail((jqXHR) => {
+
+                })
+        }
+
+        function getAllWardsByDistrictId(districtId) {
+            return $.ajax({
+                headers: {
+                    "accept": "application/json",
+                    "content-type": "application/json"
+                },
+                type: "GET",
+                url: "https://vapi.vnappmob.com/api/province/ward/" + districtId
+            })
+                .done((data) => {
+                    if (data.results.length != 0) {
+                        $('#ward').empty();
+                        $('#wardUp').empty();
+
+                        $.each(data.results, (i, item) => {
+                            let str = `<option value="${item.ward_id}">${item.ward_name}</option>`;
+                            $("#ward").append(str);
+                            $("#wardUp").append(str);
+                        });
+                        wards = data;
+                    }
+                    else {
+                        Swal.fire({
+                            title: "District invalid!",
+                            icon: 'question',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+
+                })
+                .fail((jqXHR) => {
+
+                })
+        }
+
+        function selectAddressToCreate() {
+            getAllProvinces().then(() => {
+                let provinceId = $("#province").val();
+
+                getAllDistrictsByProvinceId(provinceId).then(() => {
+
+                    let districtId = $("#district").val();
+
+                    getAllWardsByDistrictId(districtId);
+                });
+            })
+        }
+
+        function selectAddressToUpdate() {
+            getAllProvinces().then(() => {
+                let provinceId = $("#provinceUp").val();
+
+                getAllDistrictsByProvinceId(provinceId).then(() => {
+
+                    let districtId = $("#districtUp").val();
+
+                    getAllWardsByDistrictId(districtId);
+                });
+            })
+        }
+
+
+        $("#province").change(() => {
+            let provinceId = $("#province").val();
+
+            getAllDistrictsByProvinceId(provinceId).then(() => {
+
+                let districtId = $("#district").val();
+
+                getAllWardsByDistrictId(districtId);
+            })
+        })
+
+        $("#provinceUp").change(() => {
+            let provinceId = $("#provinceUp").val();
+
+            getAllDistrictsByProvinceId(provinceId).then(() => {
+
+                let districtId = $("#districtUp").val();
+
+                getAllWardsByDistrictId(districtId);
+            })
+        })
+
+        $("#district").change(() => {
+            let districtId = $("#district").val();
+
+            getAllWardsByDistrictId(districtId);
+        })
+
+        $("#districtUp").change(() => {
+            let districtId = $("#districtUp").val();
+
+            getAllWardsByDistrictId(districtId);
+        })
+        // END API province
+
+        function getAllCustomers() {
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "GET",
+                url: 'http://localhost:3000/customers?deleted=0'
+            })
+                .done((data) => {
+                    drawCustomers(data);
+                    listCustomer = data;
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR);
+                });
+        }
+
+        function getCustomerById(id) {
+            return $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "GET",
+                url: 'http://localhost:3000/customers/' + id
+            })
+                .done((data) => {
+                    customer = data;
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR);
+                });
+        }
+
+        function removeEventShowModal() {
+            $(".edit").off();
+            $(".deposit").off();
+            $(".withdraw").off();
+            $(".transfer").off();
+
+        }
+
+        function handleShowModal() {
+            removeEventShowModal();
+
+            handleShowUpdateModal();
+            handleShowDeleteModal();
+            handleShowDepositModal();
+            handleShowWithdrawModal();
+            handleShowTransferModal();
+        }
+
+        // Show list customer
+        function drawCustomers(data) {
+            $('#tbCustomer tbody').empty();
+            $('footer').hide();
+
+            $.each(data, (i, item) => {
+                let str = `
+                    <tr id="tr_${item.id}">
+                        <td>
+                            <span class="select-tab unselected" id="select_${item.id}"></span>
+                        </td>
+                        <td class="text-center">${item.id}</td>
+                        <td>${item.fullName}</td>
+                        <td>${item.email}</td>
+                        <td class="text-center">${item.phone}</td>
+                        <td class="text-end">${item.balance}</td>
+                        <td>${item.locationRegion.provinceName}</td>
+                        <td>${item.locationRegion.districtName}</td>
+                        <td>${item.locationRegion.wardName}</td>
+                        <td>${item.locationRegion.address}</td>
+                    </tr>
+                `;
+                let tbCustomer = $('#tbCustomer tbody');
+                tbCustomer.prepend(str);
+
+                drawFooter(item);
+            });
+            initTooltip();
+
+            handleShowModal();
+        }
+
+        // Create
+
+        function doCreate() {
+            let fullName = $('#fullName').val();
+            let email = $('#email').val();
+            let phone = $('#phone').val();
+            let provinceId = $('#province').val();
+            let districtId = $('#district').val();
+            let wardId = $('#ward').val();
+            let address = $('#address').val();
+
+            let province_name;
+            let district_name;
+            let ward_name;
+
+            $.each(provinces.results, (i, item) => {
+                if (item.province_id == provinceId) {
+                    province_name = item.province_name;
+                }
+            });
+
+            $.each(districts.results, (i, district) => {
+                if (district.district_id == districtId) {
+                    district_name = district.district_name;
+                }
+            });
+
+            $.each(wards.results, (i, ward) => {
+                if (ward.ward_id == wardId) {
+                    ward_name = ward.ward_name;
+                }
+            });
+
+            if (province_name == null || district_name == null || ward_name == null) {
+                Swal.fire({
+                    title: "Location region invalid!",
+                    icon: 'question',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                $("#mdCreate").modal('hide');
+                $('#frmCreate')[0].reset();
+                return;
+
+            }
+
+            let locationRegion = new LocationRegion(provinceId, province_name, districtId, district_name, wardId, ward_name, address);
+
+            customer = new Customer(0, fullName, email, phone, 0, locationRegion, 0);
+            delete customer.id;
+
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "POST",
+                url: 'http://localhost:3000/customers',
+                data: JSON.stringify(customer)
+            })
+                .done((item) => {
+
+                    let str = `
+                                        <tr id="tr_${item.id}">
+                                            <td>
+                                                <span class="select-tab unselected" id="select_${item.id}"></span>
+                                            </td>
+                                            <td class="text-center">${item.id}</td>
+                                            <td>${item.fullName}</td>
+                                            <td>${item.email}</td>
+                                            <td class="text-center">${item.phone}</td>
+                                            <td class="text-end">${item.balance}</td>
+                                            <td>${item.locationRegion.provinceName}</td>
+                                            <td>${item.locationRegion.districtName}</td>
+                                            <td>${item.locationRegion.wardName}</td>
+                                            <td>${item.locationRegion.address}</td>
+                                        </tr>
+                                    `;
+                    let tbCustomer = $('#tbCustomer tbody');
+                    tbCustomer.prepend(str);
+
+                    drawFooter(item);
+
+                    $('#frmCreate')[0].reset();
+
+                    initTooltip();
+                    handleShowModal();
+
+                    Swal.fire({
+                        // position: 'top-end',
+                        icon: 'success',
+                        title: 'Create customer succesfully',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR);
+                });
+        }
+        let btnCreate = $('#btnCreate');
+
+        btnCreate.on('click', () => {
+            $("#frmCreate").submit();
+        });
+
+        // show form update
+        function handleShowUpdateModal() {
+
+            let btnUpdate = $(".edit");
+
+            btnUpdate.on('click', function () {
+                let id = +$(this).data('id');
+
+
+
+                getCustomerById(id).then(() => {
+                    $("#idUp").val(customer.id);
+                    $("#fullNameUp").val(customer.fullName);
+                    $("#emailUp").val(customer.email);
+                    $("#phoneUp").val(customer.phone);
+                    $("#provinceUp").val(customer.locationRegion.provinceId);
+
+                    getAllDistrictsByProvinceId(customer.locationRegion.provinceId).then(() => {
+
+                        $("#districtUp").val(customer.locationRegion.districtId);
+
+                        getAllWardsByDistrictId(customer.locationRegion.districtId).then(() => {
+
+                            $("#wardUp").val(customer.locationRegion.wardId);
+                            $("#addressUp").val(customer.locationRegion.address);
+
+                            $("#mdUpdate").modal('show');
+
+                        })
+                    })
+                })
+                    .catch(() => {
+                        Swal.fire({
+                            title: "Customer invalid",
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    });
+            })
+        }
+
+        // update customer
+
+        function doUpdate() {
+            let customerId = +$("#idUp").val();
+            getCustomerById(customerId).then(() => {
+
+                let fullName = $('#fullNameUp').val();
+                let email = $('#emailUp').val();
+                let phone = $('#phoneUp').val();
+                let provinceId = $('#provinceUp').val();
+                let districtId = $('#districtUp').val();
+                let wardId = $('#wardUp').val();
+                let address = $('#addressUp').val();
+                let balance = customer.balance;
+
+                let province_name;
+                let district_name;
+                let ward_name;
+
+                $.each(provinces.results, (i, item) => {
+                    if (item.province_id == provinceId) {
+                        province_name = item.province_name;
+                    }
+                });
+
+                $.each(districts.results, (i, district) => {
+                    if (district.district_id == districtId) {
+                        district_name = district.district_name;
+                    }
+                });
+
+                $.each(wards.results, (i, ward) => {
+                    if (ward.ward_id == wardId) {
+                        ward_name = ward.ward_name;
+                    }
+                });
+
+                let locationRegion = new LocationRegion(provinceId, province_name, districtId, district_name, wardId, ward_name, address);
+
+                customer = new Customer(customerId, fullName, email, phone, balance, locationRegion, 0);
+
+                $.ajax({
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-type": "application/json"
+                    },
+                    type: "PUT",
+                    url: 'http://localhost:3000/customers/' + customerId,
+                    data: JSON.stringify(customer)
+                })
+                    .done((item) => {
+
+                        drawCustomer(item);
+
+                        $("#mdUpdate").modal('hide');
+
+                        Swal.fire({
+                            // position: 'top-end',
+                            icon: 'success',
+                            title: 'Customer has been updated',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    })
+                    .fail((jqXHR) => {
+                        console.log(jqXHR);
+                    });
+
+            })
+                .catch(() => {
+                    Swal.fire({
+                        title: "Customer not exists!",
+                        icon: 'question',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                })
+        }
+
+        let btnUpdate = $("#btnUpdate");
+
+        btnUpdate.on('click', () => {
+            $("#frmUpdate").submit();
+        });
+
+
+
+        // show info delete
+        function handleShowDeleteModal() {
+
+            let btnDelete = $(".remove");
+
+            btnDelete.on('click', function () {
+
+                let id = $(this).data('id');
+
+                getCustomerById(id).then(() => {
+                    $("#idDel").val(customer.id);
+                    $("#fullNameDel").val(customer.fullName);
+                    $("#emailDel").val(customer.email);
+                    $("#phoneDel").val(customer.phone);
+                    $("#provinceDel").val(customer.locationRegion.provinceName);
+                    $("#districtDel").val(customer.locationRegion.districtName);
+                    $("#wardDel").val(customer.locationRegion.wardName);
+                    $("#addressDel").val(customer.locationRegion.address);
+
+                    $("#mdDelete").modal('show');
+                })
+                    .catch(() => {
+                        Swal.fire({
+                            title: "Customer invalid",
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    });
+            })
+        }
+        // Delete
+        let btnDelete = $("#btnDelete");
+
+        btnDelete.on('click', () => {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let customerId = +$("#idDel").val();
+
+                    getCustomerById(customerId).then(() => {
+                        $.ajax({
+                            headers: {
+                                "Accept": "application/json",
+                                "Content-type": "application/json"
+                            },
+                            type: "PATCH",
+                            url: 'http://localhost:3000/customers/' + customerId,
+                            data: JSON.stringify({
+                                "deleted": 1
+                            })
+                        })
+                            .done((data) => {
+                                $('#tr_' + customerId).remove();
+                                Swal.fire({
+                                    position: 'top-end',
+                                    icon: 'success',
+                                    title: 'Customer has been deleted',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            })
+                            .fail((jqXHR) => {
+                                console.log(jqXHR);
+                            });
+
+                        $("#mdDelete").modal('hide');
+
+                    })
+                        .catch(() => {
+                            Swal.fire({
+                                title: "Customer invalid",
+                                icon: 'error',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        })
+                }
+            })
+        });
+
+        // show form deposit
+        function handleShowDepositModal() {
+
+            let btnDeposit = $(".deposit");
+
+            btnDeposit.on('click', function () {
+
+                let id = $(this).data('id');
+
+                getCustomerById(id).then(() => {
+                    $("#idCus").val(customer.id);
+                    $("#fullNameCus").val(customer.fullName);
+                    $("#balanceCus").val(customer.balance);
+
+                    $("#mdDeposit").modal('show');
+                })
+                    .catch(() => {
+                        Swal.fire({
+                            title: "Customer invalid",
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    });
+            })
+        }
+        // deposit
+
+        let btnDeposit = $("#btnDeposit");
+        let deposit;
+        let depositId = 1;
+        function doDeposit() {
+
+            let customerId = +$("#idCus").val();
+            let transactionAmount = +$('#transactionAmountDe').val();
+
+            getCustomerById(customerId).then(() => {
+                let balance = +$('#balanceCus').val();
+                let newBalance;
+
+                if (transactionAmount < 10000 || transactionAmount > 100000000) {
+                    Swal.fire({
+                        // position: 'top-end',
+                        icon: 'warning',
+                        title: 'Warring!',
+                        text: "Transactiona amount invalid!",
+                        showConfirmButton: true,
+                        // timer: 1500
+                    })
+                    // $('#frmDeposit')[0].reset();
+                    return;
+                }
+                newBalance = balance + transactionAmount;
+
+                if (newBalance > 100000000000) {
+                    Swal.fire({
+                        // position: 'top-end',
+                        icon: 'warning',
+                        title: 'Warring!',
+                        text: "Please check balance limit or contact the administrator!",
+                        showConfirmButton: true,
+                        // timer: 1500
+                    })
+                    $('#frmDeposit')[0].reset();
+                    return;
+                }
+
+                deposit = new Deposit(0, customerId, transactionAmount);
+                delete deposit.id;
+                depositId++;
+
+                $.ajax({
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-type": "application/json"
+                    },
+                    type: "POST",
+                    url: 'http://localhost:3000/deposit',
+                    data: JSON.stringify(deposit)
+                })
+                    .done((data) => {
+                        $.ajax({
+                            headers: {
+                                "Accept": "application/json",
+                                "Content-type": "application/json"
+                            },
+                            type: "PATCH",
+                            url: 'http://localhost:3000/customers/' + customerId,
+                            data: JSON.stringify({
+                                "balance": newBalance
+                            })
+                        })
+                            .done((item) => {
+                                drawCustomer(item);
+
+                                $('#frmDeposit')[0].reset();
+                                $("#mdDeposit").modal('hide');
+                            })
+                            .fail((jqXHR) => {
+                                console.log(jqXHR);
+                            });
+
+                        Swal.fire({
+                            // position: 'top-end',
+                            icon: 'success',
+                            title: 'Deposit Successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    })
+                    .fail((jqXHR) => {
+                        console.log(jqXHR);
+                    });
+            })
+                .catch(() => {
+
+                })
+        }
+
+        btnDeposit.on('click', () => {
+            $("#frmDeposit").submit();
+        });
+
+        // show withdraw form
+        function handleShowWithdrawModal() {
+
+            let btnWithdraw = $(".withdraw");
+
+            btnWithdraw.on('click', function () {
+
+                let id = $(this).data('id');
+                getCustomerById(id).then(() => {
+                    $("#idCus1").val(customer.id);
+                    $("#fullNameCus1").val(customer.fullName);
+                    $("#balanceCus1").val(customer.balance);
+
+                    $("#mdWithdraw").modal('show');
+                })
+                    .catch(() => {
+                        Swal.fire({
+                            title: "Customer information invalid",
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    });
+            })
+        }
+        // withdraw
+        let btnWithdraw = $("#btnWithdraw");
+        let withdraw;
+
+        function doWithdraw() {
+            let customerId = +$("#idCus1").val();
+            let balance = +$('#balanceCus1').val();
+            let transactionAmount = +$('#transactionAmountWi').val();
+
+            let newBalance;
+            if (transactionAmount < 50000 || transactionAmount > 10000000) {
+                Swal.fire({
+                    // position: 'top-end',
+                    icon: 'warning',
+                    title: 'Warring!',
+                    text: "Transactiona amount invalid!",
+                    showConfirmButton: true,
+                    // timer: 1500
+                })
+                // $('#frmDeposit')[0].reset();
+                return;
+            }
+            if (balance >= transactionAmount) {
+                newBalance = balance - transactionAmount;
+
+                withdraw = new Withdraw(withdrawId, customerId, transactionAmount);
+                delete withdraw.id;
+                withdrawId++;
+
+
+                $.ajax({
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-type": "application/json"
+                    },
+                    type: "POST",
+                    url: 'http://localhost:3000/withdraw',
+                    data: JSON.stringify(withdraw)
+                })
+                    .done((data) => {
+                        $.ajax({
+                            headers: {
+                                "Accept": "application/json",
+                                "Content-type": "application/json"
+                            },
+                            type: "PATCH",
+                            url: 'http://localhost:3000/customers/' + customerId,
+                            data: JSON.stringify({
+                                "balance": newBalance
+                            })
+                        })
+                            .done((item) => {
+                                drawCustomer(item);
+                                $("#mdWithdraw").modal('hide');
+                                $('#frmWithdraw')[0].reset();
+                            })
+                            .fail((jqXHR) => {
+                                console.log(jqXHR);
+                            });
+
+                        Swal.fire({
+                            // position: 'top-end',
+                            icon: 'success',
+                            title: 'Withdraw Successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    })
+                    .fail((jqXHR) => {
+                        console.log(jqXHR);
+                    });
+
+            } else {
+                Swal.fire({
+                    title: "Oops...",
+                    text: "Your balance not enough",
+                    icon: 'error',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            }
+        }
+        let withdrawId = 1;
+        btnWithdraw.on('click', () => {
+            $("#frmWithdraw").submit();
+        });
+
+        // show form transfer
+        function handleShowTransferModal() {
+
+            let btnTransfer = $(".transfer");
+
+            btnTransfer.on('click', function () {
+
+                let id = $(this).data('id');
+                getCustomerById(id).then(() => {
+                    $("#senderId").val(customer.id);
+                    $("#senderName").val(customer.fullName);
+                    $("#senderEmail").val(customer.email);
+                    $("#senderBalance").val(customer.balance);
+                    getRecipients(id);
+
+                    $("#mdTransfer").modal('show');
+                })
+                    .catch(() => {
+                        Swal.fire({
+                            title: "Customer information invalid",
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    });
+            })
+        }
+
+        function getRecipients(senderId) {
+            $.ajax({
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                },
+                type: "GET",
+                url: 'http://localhost:3000/customers'
+            })
+                .done((data) => {
+                    selectRecipient(data, senderId);
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR);
+                });
+        }
+
+        function selectRecipient(data, senderId) {
+            $('#selectRecipient').empty();
+            $.each(data, (i, item) => {
+                if (item.id != senderId) {
+                    let str = `
+                    <option value="${item.id}">
+                        (${item.id}) - ${item.fullName}
+                    </option>
+                `;
+                    let selectRecipient = $('#selectRecipient');
+                    selectRecipient.append(str);
+                }
+            });
+        }
+        // transfer
+        let btnTransfer = $("#btnTransfer");
+        let transfer;
+        let transferId = 1;
+
+        $("#transferAmount").on("input", function () {
+            let transferAmount = +$(this).val();
+            let fees = 10;
+            let feesAmount = transferAmount * fees / 100;
+            let transactionAmount = transferAmount + feesAmount;
+
+            $("#transactionAmountTr").val(transactionAmount);
+        });
+
+        function doTransfer() {
+            let senderId = +$("#senderId").val();
+            let senderName = $('#senderName').val();
+            let senderEmail = $('#senderEmail').val();
+            let balanceSender = +$('#senderBalance').val();
+
+            let recipientId = +$("#selectRecipient").val();
+            let recipientBalance;
+            $.each(listCustomer, (i, item) => {
+                if (item.id == recipientId) {
+                    recipientBalance = item.balance;
+                }
+            });
+
+            let transferAmount = +$('#transferAmount').val();
+            let fees = +$("#fees").val();
+            let feesAmout = transferAmount * fees / 100;
+            let transactionAmount = transferAmount + feesAmout;
+            let newBalanceSender;
+
+            getCustomerById(senderId).then(() => {
+                getCustomerById(recipientId).then(() => {
+                    if (senderId == recipientId) {
+                        Swal.fire({
+                            // position: 'top-end',
+                            icon: 'warning',
+                            title: 'Warring!',
+                            text: "Recipient invalid",
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        return;
+                    }
+                    if (transferAmount < 10000 || transferAmount > 100000000) {
+                        Swal.fire({
+                            // position: 'top-end',
+                            icon: 'warning',
+                            title: 'Warring!',
+                            text: "TransferAmount invalid! Between 10.000 and 100.000.000",
+                            showConfirmButton: true,
+                            // timer: 1500
+                        })
+                        $('#frmTransfer')[0].reset();
+                        return;
+                    }
+                    if (balanceSender >= transactionAmount) {
+                        newBalanceSender = balanceSender - transactionAmount;
+
+                        let newBalanceRicipient;
+
+                        newBalanceRicipient = recipientBalance + transferAmount;
+
+                        if (newBalanceRicipient > 100000000000) {
+                            Swal.fire({
+                                // position: 'top-end',
+                                icon: 'warning',
+                                title: 'Warring!',
+                                text: "Please check the recipient's balance limit or contact the administrator!",
+                                showConfirmButton: true,
+                                // timer: 1500
+                            })
+                            $('#frmTransfer')[0].reset();
+                            return;
+                        }
+
+                        transfer = new Transfer(transferId, senderId, recipientId, fees, feesAmout, transferAmount, transactionAmount);
+                        delete transfer.id;
+                        transferId++;
+
+
+                        $.ajax({
+                            headers: {
+                                "Accept": "application/json",
+                                "Content-type": "application/json"
+                            },
+                            type: "POST",
+                            url: 'http://localhost:3000/transfer',
+                            data: JSON.stringify(transfer)
+                        })
+                            .done((data) => {
+                                $.ajax({
+                                    headers: {
+                                        "Accept": "application/json",
+                                        "Content-type": "application/json"
+                                    },
+                                    type: "PATCH",
+                                    url: 'http://localhost:3000/customers/' + senderId,
+                                    data: JSON.stringify({
+                                        "balance": newBalanceSender
+                                    })
+                                })
+                                    .done((item) => {
+                                        drawCustomer(item);
+
+
+                                        $.ajax({
+                                            headers: {
+                                                "Accept": "application/json",
+                                                "Content-type": "application/json"
+                                            },
+                                            type: "PATCH",
+                                            url: 'http://localhost:3000/customers/' + recipientId,
+                                            data: JSON.stringify({
+                                                "balance": newBalanceRicipient
+                                            })
+                                        })
+                                            .done((item) => {
+                                                drawCustomer(item);
+
+                                                $('#frmTransfer')[0].reset();
+
+                                                $("#mdTransfer").modal('hide');
+                                                Swal.fire({
+                                                    // position: 'top-end',
+                                                    icon: 'success',
+                                                    title: 'Transfer Successfully',
+                                                    showConfirmButton: false,
+                                                    timer: 1500
+                                                })
+                                            })
+                                            .fail((jqXHR) => {
+                                                console.log(jqXHR);
+                                            });
+                                    })
+                                    .fail((jqXHR) => {
+                                        console.log(jqXHR);
+                                    });
+                            })
+                            .fail((jqXHR) => {
+                                console.log(jqXHR);
+                            });
+                    } else {
+                        Swal.fire({
+                            title: "Oops...",
+                            text: "Your balance not enough",
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                    }
+                })
+                    .catch(() => {
+                        Swal.fire({
+                            // position: 'top-end',
+                            icon: 'question',
+                            title: 'Danger!',
+                            text: "Recipient not exists!",
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                    })
+            })
+                .catch(() => {
+                    Swal.fire({
+                        // position: 'top-end',
+                        icon: 'question',
+                        title: 'Danger!',
+                        text: "Sender not exists!",
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                })
+
+
+        }
+
+        btnTransfer.on('click', () => {
+            $("#frmTransfer").submit();
+        });
+
+        // tooltip for action
+        function initTooltip() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        }
+
+        // reset form then close
+        let btnClose = $(".btnClose");
+        btnClose.on('click', () => {
+            $('#frmCreate')[0].reset();
+            $('#frmUpdate')[0].reset();
+            $('#frmDeposit')[0].reset();
+            $('#frmWithdraw')[0].reset();
+            $('#frmTransfer')[0].reset();
+        });
+        /* Validation by JQuery*/
+
+        // Create form validate
+        $("#mdCreate").on('hidden.bs.modal', () => {
+            $("#mdCreate .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#frmCreate").validate().resetForm();
+        })
+
+        $("#frmCreate").validate({
+            rules: {
+                fullName: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 30
+                },
+                email: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 30,
+                    valid_email: true
+                },
+                phone: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 20
+                },
+                address: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 50
+                }
+            },
+            messages: {
+                fullName: {
+                    required: "Please enter your full name",
+                    minlength: "Minimum name length is 5",
+                    maxlength: "The maximum name length is 30"
+                },
+                email: {
+                    required: "Please enter your email",
+                    minlength: "Minimum email length is 5",
+                    maxlength: "The maximum email length is 30"
+                },
+                phone: {
+                    required: "Please enter your phone",
+                    minlength: "Minimum phone length is 10",
+                    maxlength: "The maximum phone length is 20"
+                },
+                address: {
+                    required: "Please enter your address",
+                    minlength: "Minimum address length is 5",
+                    maxlength: "The maximum address length is 50"
+                }
+            },
+            errorLabelContainer: "#mdCreate .modal-alert-danger",
+            errorPlacement: function (error, element) {
+                error.appendTo("#mdCreate .modal-alert-danger");
+            },
+            showErrors: function (errorMap, errorList) {
+                if (this.numberOfInvalids() > 0) {
+                    $("#mdCreate .modal-alert-danger").removeClass("hide").addClass("show");
+                } else {
+                    $("#mdCreate .modal-alert-danger").removeClass("show").addClass("hide").empty();
+                    $("#frmCreate input.error").removeClass("error");
+                }
+                this.defaultShowErrors();
+            },
+            submitHandler: function () {
+                doCreate();
+            }
+        })
+
+        $.validator.addMethod('valid_email', function (value) {
+            var regex = /^[a-z0-9]+([-._][a-z0-9]+)*@([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{1,5}$/;
+            return value.trim().match(regex);
+        }, "(Email invalid!)");
+
+
+        // Update form validate
+        $("#mdUpdate").on('hidden.bs.modal', () => {
+            $("#mdUpdate .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#frmUpdate").validate().resetForm();
+        })
+
+        $("#frmUpdate").validate({
+            rules: {
+                fullNameUp: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 30
+                },
+                emailUp: {
+                    required: true,
+                    // email: true,
+                    minlength: 5,
+                    maxlength: 30
+                },
+                phoneUp: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 20
+                },
+                addressUp: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 50
+                }
+            },
+            messages: {
+                fullNameUp: {
+                    required: "(Please enter your full name)",
+                    minlength: "(Minimum name length is 5)",
+                    maxlength: "(The maximum name length is 30)"
+                },
+                emailUp: {
+                    required: "(Please enter your email)",
+                    minlength: "(Minimum emali length is 5)",
+                    maxlength: "(The maximum emali length is 30)"
+                },
+                phoneUp: {
+                    required: "(Please enter your phone)",
+                    minlength: "(Minimum phone length is 10)",
+                    maxlength: "(The maximum phone length is 20)"
+                },
+                addressUp: {
+                    required: "(Please enter your address)",
+                    minlength: "(Minimum address length is 5)",
+                    maxlength: "(The maximum address length is 50)"
+                }
+            },
+
+            submitHandler: function () {
+                doUpdate();
+            }
+        })
+
+        // Deposit validate
+        $("#mdDeposit").on('hidden.bs.modal', () => {
+            $("#mdDeposit .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#frmDeposit").validate().resetForm();
+        })
+
+        $("#frmDeposit").validate({
+            rules: {
+                transactionAmountDe: {
+                    required: true,
+                    isNumberWithSpace: true
+                }
+            },
+            messages: {
+                transactionAmountDe: {
+                    required: "(Please enter transaction amount)",
+                }
+            },
+
+            submitHandler: function () {
+                doDeposit();
+            }
+        })
+
+        // Withdraw validate
+        $("#mdWithdraw").on('hidden.bs.modal', () => {
+            $("#mdWithdraw .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#frmWithdraw").validate().resetForm();
+        })
+
+        $("#frmWithdraw").validate({
+            rules: {
+                transactionAmountWi: {
+                    required: true,
+                    isNumberWithSpace: true
+                }
+            },
+            messages: {
+                transactionAmountWi: {
+                    required: "(Please enter transaction amount)",
+                }
+            },
+            submitHandler: function () {
+                doWithdraw();
+            }
+        })
+
+        // Transfer validate
+        $("#mdTransfer").on('hidden.bs.modal', () => {
+            $("#mdTransfer .modal-alert-danger").removeClass("show").addClass("hide");
+            $("#frmTransfer").validate().resetForm();
+        })
+
+        $("#frmTransfer").validate({
+            rules: {
+                transferAmount: {
+                    required: true,
+                    isNumberWithSpace: true
+                }
+            },
+            messages: {
+                transferAmount: {
+                    required: "(Please enter transfer amount)",
+                }
+            },
+            submitHandler: function () {
+                doTransfer();
+            }
+        })
+
+        $.validator.addMethod("isNumberWithSpace", function (value, element) {
+            return this.optional(element) || /^[-+]?\s*[0-9\s]+\s*$/i.test(value);
+        }, "(Please enter number)");
+
+        // draw customer
+        function drawCustomer(item) {
+            let str = `
+                    <tr id="tr_${item.id}">
+                        <td>
+                            <span class="select-tab selected" id="select_${item.id}"></span>
+                        </td>
+                        <td class="text-center">${item.id}</td>
+                        <td>${item.fullName}</td>
+                        <td>${item.email}</td>
+                        <td class="text-center">${item.phone}</td>
+                        <td class="text-end">${item.balance}</td>
+                        <td>${item.locationRegion.provinceName}</td>
+                        <td>${item.locationRegion.districtName}</td>
+                        <td>${item.locationRegion.wardName}</td>
+                        <td>${item.locationRegion.address}</td>
+                    </tr>
+                `;
+            let trCustomer = $(`#tr_${item.id}`);
+            trCustomer.replaceWith(str);
+
+            drawFooter(item);
+        }
+
+        function drawFooter(item) {
+            let getAction = $(`#tr_${item.id}`);
+
+            getAction.on('click', () => {
+                $('footer').empty();
+
+                let str = `
+                        <div class="footer-body">
+                            <div style="text-align: center;">
+                                <button class="btn btn-outline-secondary edit" data-id="${item.id}" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" data-bs-title="Update">
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true"> Update</i>
+                                </button>
+                            </div>
+                            <div style="text-align: center;">
+                                <button class="btn btn-outline-success deposit" data-id="${item.id}" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" data-bs-title="Deposit">
+                                    <i class="fa fa-plus" aria-hidden="true"> Deposit</i>
+                                </button>
+                            </div>
+                            <div style="text-align: center;">
+                                <button class="btn btn-outline-warning withdraw" data-id="${item.id}" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" data-bs-title="Withdraw">
+                                    <i class="fa fa-minus" aria-hidden="true"> Withdraw</i>
+                                </button>
+                            </div>
+                            <div style="text-align: center;">
+                                <button class="btn btn-outline-primary transfer" data-id="${item.id}" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" data-bs-title="Transfer">
+                                    <i class="fa fa-exchange" aria-hidden="true"> Transfer</i>
+                                </button>
+                            </div>
+                            <div style="text-align: center;">
+                                <button class="btn btn-outline-danger remove" data-bs-toggle="tooltip" data-id="${item.id}"
+                                    data-bs-placement="top" data-bs-title="Delete">
+                                    <i class="fa fa-ban" aria-hidden="true"> Delete</i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                let showAction = $('footer');
+                showAction.append(str);
+
+                $(".select-tab").removeClass('selected').addClass('unselected');
+                $(`#select_${item.id}`).removeClass('unselected').addClass('selected');
+
+                $('footer').show('show');
+
+                handleShowModal();
+
+            });
+
+            getAction.dblclick(() => {
+                $('footer').hide('hide');
+                $(".select-tab").removeClass('selected').addClass('unselected');
+            })
+        }
+    </script>
+</body>
+
+</html>
